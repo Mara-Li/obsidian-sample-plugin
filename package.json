@@ -23,7 +23,6 @@
 		"@typescript-eslint/eslint-plugin": "5.29.0",
 		"@typescript-eslint/parser": "5.29.0",
 		"builtin-modules": "3.3.0",
-		"ejs": "^3.1.9",
 		"esbuild": "0.17.3",
 		"i18next": "^23.10.1",
 		"obsidian": "latest",
@@ -37,6 +36,7 @@
 		"commit-and-tag-version": "^12.2.0",
 		"dedent": "^1.5.1",
 		"ts-node": "^10.9.2",
-		"dedent": "^1.5.1"
+		"dotenv": "^16.4.5",
+		"ejs": "^3.1.9",
 	}
 }
