@@ -30,6 +30,7 @@ const exportToVaultFunc = {
 				return;
 			}
 			const vaultPath = process.env.VAULT_PATH;
+			if (!vaultPath) return;
 			const pluginManifest = JSON.parse(fs.readFileSync("./manifest.json", "utf-8"));
 			const pluginId = pluginManifest.id;
 			const pluginFolder = `${vaultPath}/.obsidian/plugins/${pluginId}`;
@@ -38,7 +39,7 @@ const exportToVaultFunc = {
 			}
 			fs.copyFileSync("./dist/main.js", `${pluginFolder}/main.js`);
 			if (fs.existsSync("./dist/styles.css"))
-			fs.copyFileSync("./dist/styles.css", `${pluginFolder}/styles.css`);
+				fs.copyFileSync("./dist/styles.css", `${pluginFolder}/styles.css`);
 			fs.copyFileSync("./manifest.json", `${pluginFolder}/manifest.json`);
 		});
 	}
@@ -53,7 +54,7 @@ const exportToDist = {
 			}
 			fs.copyFileSync("./main.js", "./dist/main.js");
 			if (fs.existsSync("./styles.css"))
-			fs.copyFileSync("./styles.css", "./dist/styles.css");
+				fs.copyFileSync("./styles.css", "./dist/styles.css");
 			fs.copyFileSync("./manifest.json", "./dist/manifest.json");
 		});
 	}

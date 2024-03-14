@@ -6,7 +6,7 @@ on:
         tags:
             - "*"
 env:
-    PLUGIN_NAME: PLUGIN_NAME # Change this to match the id of your plugin.
+    PLUGIN_NAME: <%= data.id %>
 
 jobs:
     build:

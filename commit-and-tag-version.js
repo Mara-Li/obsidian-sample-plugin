@@ -109,7 +109,7 @@ if (opt.beta) {
 
 	commitAndTagVersion({
 		infile: "CHANGELOG.md",
-		bumpFiles: bumpFiles,
+		bumpFiles,
 		dryRun: opt.dryRun,
 		tagPrefix: "",
 		releaseAs: opt.releaseAs,

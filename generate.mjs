@@ -62,13 +62,21 @@ for (const files of templateFiles) {
 		const template = fs.readFileSync(pathFiles, { encoding: "utf-8" });
 		const processedTemplate = ejs.render(template, {data});
 		fs.writeFileSync(pathFiles, processedTemplate, { encoding: "utf-8" });
-		console.log(c.success("Generated: ") + c.info(pathFiles));
 	}
 }
 
 const manifest = fs.readFileSync("./manifest.json", { encoding: "utf-8" });
 const processedManifest = ejs.render(manifest, {data});
 fs.writeFileSync("manifest.json", processedManifest, { encoding: "utf-8" });
-console.log(c.success("Generated: ") + c.info("manifest.json"));
+fs.copyFileSync("manifest.json", "manifest-beta.json", { encoding: "utf-8" });
 
-console.log(c.success("Generated: ") + c.info("All files"));
+
+const readme = fs.readFileSync("./README.md", { encoding: "utf-8" });
+const processedReadme = ejs.render(readme, {data});
+fs.writeFileSync("README.md", processedReadme, { encoding: "utf-8" });
+
+const ci = fs.readFileSync("./.github/workflows/ci.yml", { encoding: "utf-8" });
+const processedCi = ejs.render(ci, {data});
+fs.writeFileSync(".github/workflows/ci.yml", processedCi, { encoding: "utf-8" });
+
+console.log(c.success("✅ Generated ") + c.info("all files"));
