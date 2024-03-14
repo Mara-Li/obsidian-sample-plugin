@@ -1,10 +1,10 @@
 import { App, PluginSettingTab, Setting } from "obsidian";
-import MyPlugin from "src/main";
+import <%= data.interfaceName %> from "./main";
 
-export class SampleSettingTab extends PluginSettingTab {
-	plugin: MyPlugin;
+export class <%= data.interfaceName %>SettingTab extends PluginSettingTab {
+	plugin: <%= data.interfaceName %>;
 
-	constructor(app: App, plugin: MyPlugin) {
+	constructor(app: App, plugin: <%= data.interfaceName %>) {
 		super(app, plugin);
 		this.plugin = plugin;
 	}

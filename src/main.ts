@@ -1,12 +1,13 @@
-import { Editor, MarkdownView, Notice, Plugin } from "obsidian";
+import { Editor, MarkdownView, Notice, Plugin, Modal } from "obsidian";
 
-import { SampleSettingTab } from "./settings";
-import { <%_ plugin.name%>Modal } from "./modals";
+import { <%= data.interfaceName %>SettingTab } from "./settings";
+import { <%= data.interfaceName%>Modal } from "./modals";
+import { <%= data.interfaceName%>Settings, DEFAULT_SETTINGS } from "./interfaces";
 
 // Remember to rename these classes and interfaces!
 
-export default class <%_ plugin.name %> extends Plugin {
-	settings: <%_ plugin.name %>Settings;
+export default class <%= data.interfaceName %> extends Plugin {
+	settings: <%= data.interfaceName %>Settings;
 
 	async onload() {
 		await this.loadSettings();
@@ -28,7 +29,7 @@ export default class <%_ plugin.name %> extends Plugin {
 			id: "open-sample-modal-simple",
 			name: "Open sample modal (simple)",
 			callback: () => {
-				new <%_ plugin.name%>Modal(this.app).open();
+				new <%= data.interfaceName%>Modal(this.app).open();
 			}
 		});
 		// This adds an editor command that can perform some operation on the current editor instance
@@ -51,7 +52,7 @@ export default class <%_ plugin.name %> extends Plugin {
 					// If checking is true, we're simply "checking" if the command can be run.
 					// If checking is false, then we want to actually perform the operation.
 					if (!checking) {
-						new <%_ plugin.name%>Modal(this.app).open();
+						new <%= DataTransferItem={}.name%>Modal(this.app).open();
 					}
 
 					// This command will only show up in Command Palette when the check function returns true
@@ -61,7 +62,7 @@ export default class <%_ plugin.name %> extends Plugin {
 		});
 
 		// This adds a settings tab so the user can configure various aspects of the plugin
-		this.addSettingTab(new SampleSettingTab(this.app, this));
+		this.addSettingTab(new <%= data.interfaceName %>SettingTab(this.app, this));
 
 		// If the plugin hooks up any global DOM events (on parts of the app that doesn't belong to this plugin)
 		// Using this function will automatically remove the event listener when this plugin is disabled.

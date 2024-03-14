@@ -1,9 +1,9 @@
 
 
-interface <%_ plugin.name %>Settings {
+export interface <%= data.interfaceName %>Settings {
 	mySetting: string;
 }
 
-const DEFAULT_SETTINGS: <%_ plugin.name %>Settings = {
+export const DEFAULT_SETTINGS: <%= data.interfaceName %>Settings = {
 	mySetting: "default"
 };

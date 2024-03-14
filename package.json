@@ -9,7 +9,7 @@
 		"bump": "node commit-and-tag-version.js",
 		"postbump": "git push --follow-tags origin master",
 		"export": "node esbuild.config.mjs production export",
-		"generate": "tsc && node generate.ts"
+		"generate": "node generate.mjs"
 	},
 	"keywords": [],
 	"author": "",
