@@ -68,7 +68,7 @@ for (const files of templateFiles) {
 
 const manifest = fs.readFileSync("./manifest.json", { encoding: "utf-8" });
 const processedManifest = ejs.render(manifest, {data});
-fs.writeFileSync("dist/manifest.json", processedManifest, { encoding: "utf-8" });
+fs.writeFileSync("manifest.json", processedManifest, { encoding: "utf-8" });
 console.log(c.success("Generated: ") + c.info("manifest.json"));
 
 console.log(c.success("Generated: ") + c.info("All files"));
