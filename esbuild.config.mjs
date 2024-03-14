@@ -1,7 +1,11 @@
 import builtins from "builtin-modules";
+import dotenv from "dotenv";
 import esbuild from "esbuild";
 import * as fs from "fs";
+import * as path from "path";
 import process from "process";
+
+dotenv.config();
 
 const banner =
 `/*
@@ -16,8 +20,7 @@ const moveStyles = {
 	name: "move-styles",
 	setup(build) {
 		build.onEnd(() => {
-			if (fs.existsSync("src/styles.css"))
-				fs.copyFileSync("src/styles.css", "./styles.css");
+			if (fs.existsSync("plugin/styles.css")) fs.copyFileSync("plugin/styles.css", "./styles.css");
 		});
 	}
 };
@@ -29,18 +32,20 @@ const exportToVaultFunc = {
 			if (!(prod && exportToVault)) {
 				return;
 			}
+			if (!process.env.VAULT_PATH) {
+				console.error("VAULT_PATH environment variable not set, skipping export to vault");
+				return;
+			}
 			const vaultPath = process.env.VAULT_PATH;
-			if (!vaultPath) return;
 			const pluginManifest = JSON.parse(fs.readFileSync("./manifest.json", "utf-8"));
 			const pluginId = pluginManifest.id;
-			const pluginFolder = `${vaultPath}/.obsidian/plugins/${pluginId}`;
+			const pluginFolder = path.join(vaultPath,".obsidian", "plugins", pluginId);
 			if (!fs.existsSync(pluginFolder)) {
 				fs.mkdirSync(pluginFolder, {recursive: true});
 			}
-			fs.copyFileSync("./dist/main.js", `${pluginFolder}/main.js`);
-			if (fs.existsSync("./dist/styles.css"))
-				fs.copyFileSync("./dist/styles.css", `${pluginFolder}/styles.css`);
-			fs.copyFileSync("./manifest.json", `${pluginFolder}/manifest.json`);
+			fs.copyFileSync("./main.js", path.join(pluginFolder, "main.js"));
+			if (fs.existsSync("./styles.css")) fs.copyFileSync("./styles.css", path.join(pluginFolder, "styles.css"));
+			fs.copyFileSync("./manifest.json", path.join(pluginFolder, "manifest.json"));
 		});
 	}
 };
@@ -52,10 +57,13 @@ const exportToDist = {
 			if (!prod) {
 				return;
 			}
-			fs.copyFileSync("./main.js", "./dist/main.js");
-			if (fs.existsSync("./styles.css"))
-				fs.copyFileSync("./styles.css", "./dist/styles.css");
-			fs.copyFileSync("./manifest.json", "./dist/manifest.json");
+			if (!fs.existsSync("./dist")) {
+				fs.mkdirSync("./dist");
+			}
+			fs.copyFileSync("main.js", path.join("./dist", "main.js"));
+			if (fs.existsSync("styles.css"))
+				fs.copyFileSync("styles.css", path.join("./dist", "styles.css"));
+			fs.copyFileSync("manifest.json", path.join("./dist", "manifest.json"));
 		});
 	}
 };
