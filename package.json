@@ -4,11 +4,12 @@
 	"description": "description",
 	"main": "main.js",
 	"scripts": {
-		"dev": "node esbuild.config.mjs --sourcemap development",
-		"build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
+		"dev": "node esbuild.config.mjs",
+		"prebuild": "tsc --noEmit --skipLibCheck",
+		"build": "node esbuild.config.mjs --production",
 		"bump": "node commit-and-tag-version.js",
 		"postbump": "git push --follow-tags origin master",
-		"export": "node esbuild.config.mjs production export",
+		"export": "node esbuild.config.mjs --production --vault",
 		"generate": "node generate.mjs"
 	},
 	"commit-and-tag-version": {
