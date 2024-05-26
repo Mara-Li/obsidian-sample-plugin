@@ -1,8 +1,8 @@
 import c from "ansi-colors";
 import { Command } from "commander";
 import ejs from "ejs";
-import fs from "fs";
-import path from "path";
+import fs from "node:fs";
+import path from "node:path";
 
 c.theme({
 	danger: c.red,
