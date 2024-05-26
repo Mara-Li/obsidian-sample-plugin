@@ -13,7 +13,7 @@
 		"postbump": "git push --follow-tags origin master",
 		"predeploy": "pnpm run bump",
 		"deploy": "pnpm run export",
-		"lint": "pnpm biome lint --apply src/"
+		"lint": "pnpm biome lint --apply src/",
 		"generate": "node generate.mjs"
 	},
 	"commit-and-tag-version": {
@@ -41,6 +41,6 @@
 		"dedent": "^1.5.1",
 		"ts-node": "^10.9.2",
 		"dotenv": "^16.4.5",
-		"ejs": "^3.1.9",
+		"ejs": "^3.1.9"
 	}
 }

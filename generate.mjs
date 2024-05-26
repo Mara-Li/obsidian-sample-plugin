@@ -23,7 +23,7 @@ const program = new Command();
 
 program
 	.description("Generate a new plugin")
-	.option("-n, --name <name>", "Name of the plugin")
+	.option("-n, --name <name>", "Name of the plugin", "Sample Plugin")
 	.option("-d, --description [description]", "Description of the plugin", "This is a sample plugin")
 	.option("-a, --author <author>", "Author of the plugin", "Sample Author")
 	.option("-ai, --author-url <author-url>", "Author URL", "")
