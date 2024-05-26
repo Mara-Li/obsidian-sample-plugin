@@ -12,6 +12,7 @@ const program = new Command();
 program
 	.option("-p, --production", "Production build")
 	.option("-v, --vault", "Use vault path")
+	.option("-o, --output-dir <path>", "Output path")
 	.parse();
 
 program.parse();
@@ -35,6 +36,17 @@ if (vaultPath && exportToVault && !fs.existsSync(folderPlugin)) {
 	fs.mkdirSync(folderPlugin, {recursive: true});
 }
 
+let outdir = "./";
+if (opt.outputDir) {
+	outdir = opt.outputDir;
+} else if (exportToVault) {
+	outdir = folderPlugin;
+} else if (prod) {
+	outdir = "./dist";
+}
+
+
+
 const moveStyles = {
 	name: "move-styles",
 	setup(build) {
@@ -56,8 +68,8 @@ const exportToVaultFunc = {
 				return;
 			}
 			
-			fs.copyFileSync("./main.js", path.join(folderPlugin, "main.js"));
-			if (fs.existsSync("./styles.css")) fs.copyFileSync("./styles.css", path.join(folderPlugin, "styles.css"));
+			fs.copyFileSync(`${outdir}/main.js`, path.join(folderPlugin, "main.js"));
+			if (fs.existsSync(`${outdir}/styles.css`)) fs.copyFileSync("./styles.css", path.join(folderPlugin, "styles.css"));
 			fs.copyFileSync("./manifest.json", path.join(folderPlugin, "manifest.json"));
 		});
 	}
@@ -70,13 +82,7 @@ const exportToDist = {
 			if (!prod) {
 				return;
 			}
-			if (!fs.existsSync("./dist")) {
-				fs.mkdirSync("./dist");
-			}
-			fs.copyFileSync("main.js", path.join("./dist", "main.js"));
-			if (fs.existsSync("styles.css"))
-				fs.copyFileSync("styles.css", path.join("./dist", "styles.css"));
-			fs.copyFileSync("manifest.json", path.join("./dist", "manifest.json"));
+			fs.copyFileSync("manifest.json", path.join(outdir, "manifest.json"));
 		});
 	}
 };
@@ -103,17 +109,24 @@ const context = await esbuild.context({
 		"@lezer/lr",
 		...builtins],
 	format: "cjs",
-	target: "es2018",
+	target: "esnext",
 	logLevel: "info",
 	sourcemap: prod ? false : "inline",
 	treeShaking: true,
-	outdir: exportToVault && folderPlugin ? folderPlugin : "./",
+	minifySyntax: prod,
+	minifyWhitespace: prod,
+	outdir,
 	plugins: [moveStyles, exportToDist, exportToVaultFunc],
 });
 
 if (prod) {
+	console.log("🎉 Build for production");
+	console.log(`📤 Output directory: ${outdir}`);
 	await context.rebuild();
+	console.log("✅ Build successful");
 	process.exit(0);
 } else {
+	console.log("🚀 Start development build");
+	console.log(`📤 Output directory: ${outdir}`);
 	await context.watch();
 }
