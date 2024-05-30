@@ -127,7 +127,8 @@ for (const files of templateFiles) {
 const manifest = fs.readFileSync("./manifest.json", { encoding: "utf-8" });
 const processedManifest = ejs.render(manifest, {data});
 fs.writeFileSync("manifest.json", processedManifest, { encoding: "utf-8" });
-fs.copyFileSync("manifest.json", "manifest-beta.json", { encoding: "utf-8" });
+fs.writeFileSync("LICENSE", licenses[answer.license].licenseText, { encoding: "utf-8" });
+fs.writeFileSync("manifest-beta.json", processedManifest, { encoding: "utf-8" });
 
 
 const readme = fs.readFileSync("./README.md", { encoding: "utf-8" });
