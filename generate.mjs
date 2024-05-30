@@ -7,6 +7,8 @@ import licenses from "spdx-license-list/full.js";
 import { getLicense } from "license";
 import packageJson from "./package.json" assert { type: "json" };
 const {dim, reset} = c;
+import {execa} from 'execa';
+
 const capitalize = (s) => {
 	if (typeof s !== "string") return "";
 	return s.charAt(0).toUpperCase() + s.slice(1);
@@ -154,6 +156,7 @@ delete packageJson.devDependencies["@types/ejs"];
 delete packageJson.dependencies.ejs;
 delete packageJson.dependencies.prompts;
 delete packageJson.dependencies["spdx-license-list"];
+delete packageJson.dependencies.execa;
 fs.writeFileSync("package.json", JSON.stringify(packageJson, null, 2), { encoding: "utf-8" });
 //detect if yarn or npm or pnpm
 
