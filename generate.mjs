@@ -8,6 +8,7 @@ import { getLicense } from "license";
 import packageJson from "./package.json" assert { type: "json" };
 const { dim, reset } = c;
 import { execa } from "execa";
+import gitUserName from "git-user-name";
 
 const capitalize = (s) => {
 	if (typeof s !== "string") return "";
@@ -68,6 +69,7 @@ const answer = await prompts(
 			type: "text",
 			name: "author",
 			message: "Enter the author name",
+			initial: gitUserName(),
 		},
 		{
 			type: "text",
@@ -186,6 +188,7 @@ delete packageJson.dependencies.prompts;
 delete packageJson.dependencies["spdx-license-list"];
 delete packageJson.dependencies.execa;
 delete packageJson.dependencies.license;
+delete packageJson.dependencies["git-user-name"];
 fs.writeFileSync("package.json", JSON.stringify(packageJson, null, 2), {
 	encoding: "utf-8",
 });
