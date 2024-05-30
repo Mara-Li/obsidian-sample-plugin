@@ -75,11 +75,13 @@ const answer = await prompts(
 			type: "text",
 			name: "authorUrl",
 			message: "Enter the author URL",
+			initial: (prev) => `https//github.com/${prev}`
 		},
 		{
 			type: "confirm",
 			name: "desktopOnly",
 			message: "Is this plugin desktop-only?",
+			initial: false,
 		},
 		{
 			type: "text",
@@ -109,12 +111,32 @@ const answer = await prompts(
 		},
 	}
 );
+/**
+ * Readd recursive sync
+ * @param {string} dir 
+ * @returns {fs.Dirent[]}
+ */
+function readdirRecursiveSync(dir) {
+    const results = [];
 
-const templateFiles = fs.readdirSync("./src", {
-	withFileTypes: true,
-	encoding: "utf-8",
-	recursive: true,
-});
+    function readDirRecursive(currentPath) {
+        const entries = fs.readdirSync(currentPath, { withFileTypes: true });
+
+        for (const entry of entries) {
+            const fullPath = path.join(currentPath, entry.name);
+            if (entry.isDirectory()) {
+                readDirRecursive(fullPath);
+            } else {
+                results.push(entry);
+            }
+        }
+    }
+
+    readDirRecursive(dir);
+    return results;
+}
+const templateFiles = readdirRecursiveSync('./src');
+
 
 const data = {
 	name: answer.name || "Sample Plugin",
@@ -132,14 +154,12 @@ if (answer.fundingUrl) {
 	data.fundingUrl = answer.fundingUrl;
 }
 
-for (const files of templateFiles) {
-	if (files.isFile()) {
-		const pathFiles = path.join(files.path, files.name);
-
-		const template = fs.readFileSync(pathFiles, { encoding: "utf-8" });
-		const processedTemplate = ejs.render(template, { data });
-		fs.writeFileSync(pathFiles, processedTemplate, { encoding: "utf-8" });
-	}
+for (const file of templateFiles) {
+	const pathFiles = path.join(file.path, file.name);
+	const template = fs.readFileSync(pathFiles, { encoding: "utf-8" });
+	const processedTemplate = ejs.render(template, { data });
+	fs.writeFileSync(pathFiles, processedTemplate, { encoding: "utf-8" });
+	
 }
 
 const manifest = fs.readFileSync("./manifest.json", { encoding: "utf-8" });
