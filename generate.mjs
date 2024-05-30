@@ -138,9 +138,9 @@ const readme = fs.readFileSync("./README.md", { encoding: "utf-8" });
 const processedReadme = ejs.render(readme, {data});
 fs.writeFileSync("README.md", processedReadme.replace("{{TEMPLATE_PLACEHOLDER LOCALE}}", "<% tp.obsidian.moment.locale() %>"), { encoding: "utf-8" });
 
-const ci = fs.readFileSync("./.github/workflows/ci.yml", { encoding: "utf-8" });
+const ci = fs.readFileSync("./.github/workflows/ci.yaml", { encoding: "utf-8" });
 const processedCi = ejs.render(ci, {data});
-fs.writeFileSync(".github/workflows/ci.yml", processedCi, { encoding: "utf-8" });
+fs.writeFileSync(".github/workflows/ci.yaml", processedCi, { encoding: "utf-8" });
 
 console.log(c.success("✅ Generated ") + c.info("all files"));
 
