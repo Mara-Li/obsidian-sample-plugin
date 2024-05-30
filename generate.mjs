@@ -1,12 +1,15 @@
 import c from "ansi-colors";
-import { dim } from "ansi-colors";
 import ejs from "ejs";
 import fs from "node:fs";
 import path from "node:path";
 import prompts from "prompts";
 import licenses from "spdx-license-list";
-import packageJson from "./package.json";
-
+import packageJson from "./package.json" assert { type: "json" };
+const {dim, reset} = c;
+const capitalize = (s) => {
+	if (typeof s !== "string") return "";
+	return s.charAt(0).toUpperCase() + s.slice(1);
+};
 c.theme({
 	danger: c.red,
 	dark: c.dim.gray,
@@ -21,9 +24,9 @@ c.theme({
 	underline: c.underline,
 	warning: c.yellow.underline,
 });
-
-prompt.start();
 const defaultPluginID = process.cwd().split(path.sep).pop().toLowerCase().replaceAll(" ", "-").replace(/-?obsidian-?/, "");
+
+
 const answer = await prompts([
 	{
 		type: () => "text",
@@ -95,10 +98,7 @@ const answer = await prompts([
 
 const templateFiles = fs.readdirSync("./src", { withFileTypes: true, encoding: "utf-8", recursive: true});
 
-const capitalize = (s) => {
-	if (typeof s !== "string") return "";
-	return s.charAt(0).toUpperCase() + s.slice(1);
-};
+
 
 const data = {
 	name: answer.name || "Sample Plugin",
