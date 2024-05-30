@@ -3,7 +3,7 @@ import ejs from "ejs";
 import fs from "node:fs";
 import path from "node:path";
 import prompts from "prompts";
-import licenses from "spdx-license-list";
+import licenses from "spdx-license-list/full.js";
 import packageJson from "./package.json" assert { type: "json" };
 const {dim, reset} = c;
 const capitalize = (s) => {
@@ -127,7 +127,8 @@ for (const files of templateFiles) {
 const manifest = fs.readFileSync("./manifest.json", { encoding: "utf-8" });
 const processedManifest = ejs.render(manifest, {data});
 fs.writeFileSync("manifest.json", processedManifest, { encoding: "utf-8" });
-fs.writeFileSync("LICENSE", licenses[answer.license].licenseText, { encoding: "utf-8" });
+const licenseText = licenses[answer.license].licenseText;
+fs.writeFileSync("LICENSE", licenseText, { encoding: "utf-8" });
 fs.writeFileSync("manifest-beta.json", processedManifest, { encoding: "utf-8" });
 
 
