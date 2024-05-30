@@ -4,6 +4,7 @@ import fs from "node:fs";
 import path from "node:path";
 import prompts from "prompts";
 import licenses from "spdx-license-list/full.js";
+import { getLicense } from "license";
 import packageJson from "./package.json" assert { type: "json" };
 const {dim, reset} = c;
 const capitalize = (s) => {
@@ -127,14 +128,15 @@ for (const files of templateFiles) {
 const manifest = fs.readFileSync("./manifest.json", { encoding: "utf-8" });
 const processedManifest = ejs.render(manifest, {data});
 fs.writeFileSync("manifest.json", processedManifest, { encoding: "utf-8" });
-const licenseText = licenses[answer.license].licenseText;
-fs.writeFileSync("LICENSE", licenseText, { encoding: "utf-8" });
+
+const license = getLicense(answer.license, { author: data.author.name, year: new Date().getFullYear() });
+fs.writeFileSync("LICENSE", license, { encoding: "utf-8" });
 fs.writeFileSync("manifest-beta.json", processedManifest, { encoding: "utf-8" });
 
 
 const readme = fs.readFileSync("./README.md", { encoding: "utf-8" });
 const processedReadme = ejs.render(readme, {data});
-fs.writeFileSync("README.md", processedReadme, { encoding: "utf-8" });
+fs.writeFileSync("README.md", processedReadme.replace("{{TEMPLATE_PLACEHOLDER LOCALE}}", "<% tp.obsidian.moment.locale() %>"), { encoding: "utf-8" });
 
 const ci = fs.readFileSync("./.github/workflows/ci.yml", { encoding: "utf-8" });
 const processedCi = ejs.render(ci, {data});
@@ -146,6 +148,7 @@ console.log(c.success("✅ Generated ") + c.info("all files"));
 packageJson.author = data.author;
 packageJson.name = data.name;
 packageJson.license = answer.license;
+packageJson.description = data.description;
 delete packageJson.scripts.generate;
 delete packageJson.devDependencies["@types/ejs"];
 delete packageJson.dependencies.ejs;
