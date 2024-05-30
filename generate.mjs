@@ -145,8 +145,8 @@ fs.writeFileSync(".github/workflows/ci.yaml", processedCi, { encoding: "utf-8" }
 console.log(c.success("✅ Generated ") + c.info("all files"));
 
 //update package.json
-packageJson.author = data.author;
-packageJson.name = data.name;
+packageJson.author = data.author.name;
+packageJson.name = data.id;
 packageJson.license = answer.license;
 packageJson.description = data.description;
 delete packageJson.scripts.generate;
