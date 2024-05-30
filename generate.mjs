@@ -151,17 +151,15 @@ delete packageJson.dependencies.prompts;
 delete packageJson.dependencies["spdx-license-list"];
 fs.writeFileSync("package.json", JSON.stringify(packageJson, null, 2), { encoding: "utf-8" });
 //detect if yarn or npm or pnpm
-const yarn = fs.existsSync("yarn.lock");
-const npm = fs.existsSync("package-lock.json");
-const pnpm = fs.existsSync("pnpm-lock.yaml");
-if (yarn) {
+
+if (fs.existsSync("yarn.lock")) {
 	console.log(c.info("Detected yarn, running yarn install"));
 	await execa("yarn", ["install"]);
-} else if (npm) {
+} else if (fs.existsSync("package-lock.json")) {
 	console.log(c.info("Detected npm, running npm install"));
 	await execa("npm", ["install"]);
 }
-else if (pnpm) {
+else if (fs.existsSync("pnpm-lock.yaml")) {
 	console.log(c.info("Detected pnpm, running pnpm install"));
 	await execa("pnpm", ["install"]);
 }
