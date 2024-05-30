@@ -68,6 +68,8 @@ const answer = await prompts([
 		type: "text",
 		name: "fundingUrl",
 		message: "Enter the funding URL",
+		initial: "",
+
 	},
 	{
 		type: "autocomplete",
@@ -99,19 +101,19 @@ const capitalize = (s) => {
 };
 
 const data = {
-	name: program.opts().name || "Sample Plugin",
-	id: program.opts().name.toLowerCase().replaceAll(" ", "-") || "sample-plugin",
-	description: program.opts().description || "This is a sample plugin",
-	interfaceName: capitalize(program.opts().name).replaceAll(" ", "") || "SamplePlugin",
+	name: answer.name || "Sample Plugin",
+	id: answer.id || "sample-plugin",
+	description: answer.description || "This is a sample plugin",
+	interfaceName: answer.name.replaceAll(" ", "")|| "SamplePlugin",
 	author: {
-		url: program.opts().authorUrl || "",
-		name: program.opts().author || "Sample Author",
+		url: answer.authorUrl || "",
+		name: answer.author || "Sample Author",
 	},
-	isDesktopOnly: !!program.opts().desktopOnly || true,
+	isDesktopOnly: !!answer.desktopOnly || false,
 };
 
-if (program.opts().fundingUrl) {
-	data.fundingUrl = program.opts().fundingUrl;
+if (answer.fundingUrl.length.trim() > 0) {
+	data.fundingUrl = answer.fundingUrl;
 }
 
 for (const files of templateFiles) {
