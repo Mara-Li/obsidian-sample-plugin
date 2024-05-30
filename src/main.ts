@@ -8,6 +8,7 @@ export default class <%= data.interfaceName %> extends Plugin {
 	settings!: <%= data.interfaceName %>Settings;
 
 	async onload() {
+		console.log(`[${this.manifest.name}] Loaded`)
 		await this.loadSettings();
 
 		// This creates an icon in the left ribbon.
@@ -73,7 +74,7 @@ export default class <%= data.interfaceName %> extends Plugin {
 	}
 
 	onunload() {
-		console.log("unloading plugin");
+		console.log(`[${this.manifest.name}] Unloaded`);
 	}
 
 	async loadSettings() {
