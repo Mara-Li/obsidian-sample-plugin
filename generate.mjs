@@ -150,3 +150,22 @@ delete packageJson.dependencies.ejs;
 delete packageJson.dependencies.prompts;
 delete packageJson.dependencies["spdx-license-list"];
 fs.writeFileSync("package.json", JSON.stringify(packageJson, null, 2), { encoding: "utf-8" });
+//detect if yarn or npm or pnpm
+const yarn = fs.existsSync("yarn.lock");
+const npm = fs.existsSync("package-lock.json");
+const pnpm = fs.existsSync("pnpm-lock.yaml");
+if (yarn) {
+	console.log(c.info("Detected yarn, running yarn install"));
+	await execa("yarn", ["install"]);
+} else if (npm) {
+	console.log(c.info("Detected npm, running npm install"));
+	await execa("npm", ["install"]);
+}
+else if (pnpm) {
+	console.log(c.info("Detected pnpm, running pnpm install"));
+	await execa("pnpm", ["install"]);
+}
+else {
+	console.log(c.warning("No package manager detected, please run yarn/npm/pnpm install"));
+}
+console.log(c.success("✅ Installed dependencies"));
