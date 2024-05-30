@@ -4,8 +4,6 @@ import { <%= data.interfaceName %>SettingTab } from "./settings";
 import { <%= data.interfaceName%>Modal } from "./modals";
 import { <%= data.interfaceName%>Settings, DEFAULT_SETTINGS } from "./interfaces";
 
-// Remember to rename these classes and interfaces!
-
 export default class <%= data.interfaceName %> extends Plugin {
 	settings!: <%= data.interfaceName %>Settings;
 
