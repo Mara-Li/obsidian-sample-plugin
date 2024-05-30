@@ -71,8 +71,6 @@ const answer = await prompts([
 		type: "text",
 		name: "fundingUrl",
 		message: "Enter the funding URL",
-		initial: "",
-
 	},
 	{
 		type: "autocomplete",
@@ -112,7 +110,7 @@ const data = {
 	isDesktopOnly: !!answer.desktopOnly || false,
 };
 
-if (answer.fundingUrl.length.trim() > 0) {
+if (answer.fundingUrl) {
 	data.fundingUrl = answer.fundingUrl;
 }
 
