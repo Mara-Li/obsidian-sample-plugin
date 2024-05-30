@@ -211,3 +211,5 @@ if (fs.existsSync("yarn.lock")) {
 	);
 }
 console.log(c.success("✅ Installed dependencies"));
+//delete this files
+fs.unlinkSync("generate.mjs");
