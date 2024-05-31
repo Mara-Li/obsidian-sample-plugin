@@ -1,4 +1,6 @@
 import { Editor, MarkdownView, Notice, Plugin, Modal } from "obsidian";
+import { resources, translationLanguage } from "./i18n";
+import i18next from "i18next";
 
 import { <%= data.interfaceName %>SettingTab } from "./settings";
 import { <%= data.interfaceName%>Modal } from "./modals";
@@ -10,7 +12,14 @@ export default class <%= data.interfaceName %> extends Plugin {
 	async onload() {
 		console.log(`[${this.manifest.name}] Loaded`)
 		await this.loadSettings();
-
+		//load i18next
+		await i18next.init({
+			lng: translationLanguage,
+			fallbackLng: "en",
+			resources,
+			returnNull: false,
+			returnEmptyString: false,
+		});
 		// This creates an icon in the left ribbon.
 		const ribbonIconEl = this.addRibbonIcon("dice", "Sample Plugin", (evt: MouseEvent) => {
 			// Called when the user clicks the icon.
