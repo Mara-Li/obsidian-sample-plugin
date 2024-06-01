@@ -10,14 +10,17 @@
 		"dev": "node esbuild.config.mjs",
 		"export": "node esbuild.config.mjs --production --vault",
 		"bump": "node commit-and-tag-version.mjs",
-		"postbump": "git commit -a --amend --no-edit && git push --follow-tags origin master",
+		"postbump": "git push --follow-tags origin master",
 		"predeploy": "pnpm run bump",
 		"deploy": "pnpm run export",
 		"lint": "pnpm biome lint --apply src/",
 		"generate": "node generate.mjs"
 	},
 	"commit-and-tag-version": {
-		"t": ""
+		"t": "",
+		"scripts": {
+			"postchangelog": "node _changelog.mjs"
+		}
 	},
 	"keywords": [],
 	"author": "",
