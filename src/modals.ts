@@ -1,4 +1,4 @@
-import { App, Modal } from "obsidian";
+import { type App, Modal } from "obsidian";
 
 export class <%= data.interfaceName%>Modal extends Modal {
 	constructor(app: App) {

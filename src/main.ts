@@ -1,4 +1,4 @@
-import { Editor, MarkdownView, Notice, Plugin, Modal } from "obsidian";
+import { type Editor, MarkdownView, Notice, Plugin, Modal } from "obsidian";
 import { resources, translationLanguage } from "./i18n";
 import i18next from "i18next";
 
@@ -21,7 +21,7 @@ export default class <%= data.interfaceName %> extends Plugin {
 			returnEmptyString: false,
 		});
 		// This creates an icon in the left ribbon.
-		const ribbonIconEl = this.addRibbonIcon("dice", "Sample Plugin", (evt: MouseEvent) => {
+		const ribbonIconEl = this.addRibbonIcon("dice", "Sample Plugin", (_evt: MouseEvent) => {
 			// Called when the user clicks the icon.
 			new Notice("This is a notice!");
 		});
@@ -44,7 +44,7 @@ export default class <%= data.interfaceName %> extends Plugin {
 		this.addCommand({
 			id: "sample-editor-command",
 			name: "Sample editor command",
-			editorCallback: (editor: Editor, view: MarkdownView) => {
+			editorCallback: (editor: Editor, _view: MarkdownView) => {
 				console.log(editor.getSelection());
 				editor.replaceSelection("Sample Editor Command");
 			}

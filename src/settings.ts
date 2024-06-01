@@ -1,4 +1,4 @@
-import { App, PluginSettingTab, Setting } from "obsidian";
+import { type App, PluginSettingTab, Setting } from "obsidian";
 import <%= data.interfaceName %> from "./main";
 
 export class <%= data.interfaceName %>SettingTab extends PluginSettingTab {
