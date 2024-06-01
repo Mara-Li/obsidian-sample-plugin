@@ -9,11 +9,6 @@ import packageJson from "./package.json" assert { type: "json" };
 const { dim, reset } = c;
 import { execa } from "execa";
 import gitUserName from "git-user-name";
-
-const capitalize = (s) => {
-	if (typeof s !== "string") return "";
-	return s.charAt(0).toUpperCase() + s.slice(1);
-};
 c.theme({
 	danger: c.red,
 	dark: c.dim.gray,
@@ -28,6 +23,95 @@ c.theme({
 	underline: c.underline,
 	warning: c.yellow.underline,
 });
+
+const capitalize = (s) => {
+	if (typeof s !== "string") return "";
+	return s.charAt(0).toUpperCase() + s.slice(1);
+};
+/**
+ * Render ejs file
+ * @param {fs.Dirent} file
+ */
+function ejsRender(file, data) {
+	const pathFiles = path.join(file.path, file.name);
+	const template = fs.readFileSync(pathFiles, { encoding: "utf-8" });
+	const processedTemplate = ejs.render(template, { data });
+	fs.writeFileSync(pathFiles, processedTemplate, { encoding: "utf-8" });
+}
+
+function updateManifest(data, answer) {
+	const manifest = fs.readFileSync("./manifest.json", { encoding: "utf-8" });
+	const processedManifest = ejs.render(manifest, { data });
+	fs.writeFileSync("manifest.json", processedManifest, { encoding: "utf-8" });
+	const license = getLicense(answer.license, {
+		author: data.author.name,
+		year: new Date().getFullYear(),
+	});
+	fs.writeFileSync("LICENSE", license, { encoding: "utf-8" });
+	fs.writeFileSync("manifest-beta.json", processedManifest, {
+		encoding: "utf-8",
+	});
+}
+
+function processReadme(data) {
+	const readme = fs.readFileSync("./README.md", { encoding: "utf-8" });
+	const processedReadme = ejs.render(readme, { data });
+	fs.writeFileSync(
+		"README.md",
+		processedReadme.replace(
+			"{{TEMPLATE_PLACEHOLDER LOCALE}}",
+			"<% tp.obsidian.moment.locale() %>"
+		),
+		{ encoding: "utf-8" }
+	);
+}
+
+function processCi(data) {
+	const ci = fs.readFileSync("./.github/workflows/ci.yaml", {
+		encoding: "utf-8",
+	});
+	const processedCi = ejs.render(ci, { data });
+	fs.writeFileSync(".github/workflows/ci.yaml", processedCi, {
+		encoding: "utf-8",
+	});
+}
+
+function updatePackageJson(data, answer) {
+	packageJson.author = data.author.name;
+	packageJson.name = data.id;
+	packageJson.license = answer.license;
+	packageJson.description = data.description;
+	delete packageJson.scripts.generate;
+	delete packageJson.devDependencies["@types/ejs"];
+	delete packageJson.dependencies.ejs;
+	delete packageJson.dependencies.prompts;
+	delete packageJson.dependencies["spdx-license-list"];
+	delete packageJson.dependencies.execa;
+	delete packageJson.dependencies.license;
+	delete packageJson.dependencies["git-user-name"];
+	fs.writeFileSync("package.json", JSON.stringify(packageJson, null, 2), {
+		encoding: "utf-8",
+	});
+}
+
+async function updateDep() {
+	if (fs.existsSync("yarn.lock")) {
+		console.log(c.info("Detected yarn, running yarn install"));
+		await execa("yarn", ["install"]);
+	} else if (fs.existsSync("package-lock.json")) {
+		console.log(c.info("Detected npm, running npm install"));
+		await execa("npm", ["install"]);
+	} else if (fs.existsSync("pnpm-lock.yaml")) {
+		console.log(c.info("Detected pnpm, running pnpm install"));
+		await execa("pnpm", ["install"]);
+	} else {
+		console.log(
+			c.warning("No package manager detected, please run yarn/npm/pnpm install")
+		);
+	}
+	console.log(c.success("✅ Installed dependencies"));
+}
+
 const defaultPluginID = process
 	.cwd()
 	.split(path.sep)
@@ -43,10 +127,8 @@ const answer = await prompts(
 			name: "id",
 			message: `Enter the plugin ID ${reset("(lowercase, no spaces)")}`,
 			initial: defaultPluginID,
-			format: (value) =>
-				value.toLowerCase().replaceAll(" ", "-").toLowerCase(),
-			validate: (value) =>
-				value.length > 0 ? true : "Please enter a valid plugin ID",
+			format: (value) => value.toLowerCase().replaceAll(" ", "-").toLowerCase(),
+			validate: (value) => (value.length > 0 ? true : "Please enter a valid plugin ID"),
 		},
 		{
 			type: "text",
@@ -75,7 +157,7 @@ const answer = await prompts(
 			type: "text",
 			name: "authorUrl",
 			message: "Enter the author URL",
-			initial: (prev) => `https//github.com/${prev}`
+			initial: (prev) => `https//github.com/${prev}`,
 		},
 		{
 			type: "confirm",
@@ -91,9 +173,7 @@ const answer = await prompts(
 		{
 			type: "autocomplete",
 			name: "license",
-			message: `Choose a license ${reset(
-				dim("(type to filter, ↑ or ↓ to navigate)")
-			)}`,
+			message: `Choose a license ${reset(dim("(type to filter, ↑ or ↓ to navigate)"))}`,
 			initial: "MIT",
 			choices: Object.entries(licenses).map(([id, license]) => {
 				return {
@@ -113,30 +193,29 @@ const answer = await prompts(
 );
 /**
  * Readd recursive sync
- * @param {string} dir 
+ * @param {string} dir
  * @returns {fs.Dirent[]}
  */
 function readdirRecursiveSync(dir) {
-    const results = [];
+	const results = [];
 
-    function readDirRecursive(currentPath) {
-        const entries = fs.readdirSync(currentPath, { withFileTypes: true });
+	function readDirRecursive(currentPath) {
+		const entries = fs.readdirSync(currentPath, { withFileTypes: true });
 
-        for (const entry of entries) {
-            const fullPath = path.join(currentPath, entry.name);
-            if (entry.isDirectory()) {
-                readDirRecursive(fullPath);
-            } else {
-                results.push(entry);
-            }
-        }
-    }
+		for (const entry of entries) {
+			const fullPath = path.join(currentPath, entry.name);
+			if (entry.isDirectory()) {
+				readDirRecursive(fullPath);
+			} else {
+				results.push(entry);
+			}
+		}
+	}
 
-    readDirRecursive(dir);
-    return results;
+	readDirRecursive(dir);
+	return results;
 }
-const templateFiles = readdirRecursiveSync('./src');
-
+const templateFiles = readdirRecursiveSync("./src");
 
 const data = {
 	name: answer.name || "Sample Plugin",
@@ -155,81 +234,21 @@ if (answer.fundingUrl) {
 }
 
 for (const file of templateFiles) {
-	const pathFiles = path.join(file.path, file.name);
-	const template = fs.readFileSync(pathFiles, { encoding: "utf-8" });
-	const processedTemplate = ejs.render(template, { data });
-	fs.writeFileSync(pathFiles, processedTemplate, { encoding: "utf-8" });
-	
+	ejsRender(file, data);
 }
 
-const manifest = fs.readFileSync("./manifest.json", { encoding: "utf-8" });
-const processedManifest = ejs.render(manifest, { data });
-fs.writeFileSync("manifest.json", processedManifest, { encoding: "utf-8" });
-
-const license = getLicense(answer.license, {
-	author: data.author.name,
-	year: new Date().getFullYear(),
-});
-fs.writeFileSync("LICENSE", license, { encoding: "utf-8" });
-fs.writeFileSync("manifest-beta.json", processedManifest, {
-	encoding: "utf-8",
-});
-
-const readme = fs.readFileSync("./README.md", { encoding: "utf-8" });
-const processedReadme = ejs.render(readme, { data });
-fs.writeFileSync(
-	"README.md",
-	processedReadme.replace(
-		"{{TEMPLATE_PLACEHOLDER LOCALE}}",
-		"<% tp.obsidian.moment.locale() %>"
-	),
-	{ encoding: "utf-8" }
-);
-
-const ci = fs.readFileSync("./.github/workflows/ci.yaml", {
-	encoding: "utf-8",
-});
-const processedCi = ejs.render(ci, { data });
-fs.writeFileSync(".github/workflows/ci.yaml", processedCi, {
-	encoding: "utf-8",
-});
-
+updateManifest(data, answer);
+processReadme(data);
+processCi(data);
 console.log(c.success("✅ Generated ") + c.info("all files"));
 
 //update package.json
-packageJson.author = data.author.name;
-packageJson.name = data.id;
-packageJson.license = answer.license;
-packageJson.description = data.description;
-delete packageJson.scripts.generate;
-delete packageJson.devDependencies["@types/ejs"];
-delete packageJson.dependencies.ejs;
-delete packageJson.dependencies.prompts;
-delete packageJson.dependencies["spdx-license-list"];
-delete packageJson.dependencies.execa;
-delete packageJson.dependencies.license;
-delete packageJson.dependencies["git-user-name"];
-fs.writeFileSync("package.json", JSON.stringify(packageJson, null, 2), {
-	encoding: "utf-8",
-});
-//detect if yarn or npm or pnpm
+updatePackageJson(data, answer);
+//create hotreload file
+fs.writeFileSync(".hotreload", "", { encoding: "utf-8" });
 
-if (fs.existsSync("yarn.lock")) {
-	console.log(c.info("Detected yarn, running yarn install"));
-	await execa("yarn", ["install"]);
-} else if (fs.existsSync("package-lock.json")) {
-	console.log(c.info("Detected npm, running npm install"));
-	await execa("npm", ["install"]);
-} else if (fs.existsSync("pnpm-lock.yaml")) {
-	console.log(c.info("Detected pnpm, running pnpm install"));
-	await execa("pnpm", ["install"]);
-} else {
-	console.log(
-		c.warning(
-			"No package manager detected, please run yarn/npm/pnpm install"
-		)
-	);
-}
-console.log(c.success("✅ Installed dependencies"));
+//detect if yarn or npm or pnpm
+await updateDep();
+
 //delete this files
 fs.unlinkSync("generate.mjs");
