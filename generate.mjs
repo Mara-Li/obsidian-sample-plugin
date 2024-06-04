@@ -76,6 +76,16 @@ function processCi(data) {
 	});
 }
 
+function processBugReport(data) {
+	const path = fs.readFileSync("./.github/ISSUE_TEMPLATE/bug.yml", {
+		encoding: "utf-8",
+	});
+	const processedCi = ejs.render(path, { data });
+	fs.writeFileSync("./.github/ISSUE_TEMPLATE/bug.yml", processedCi, {
+		encoding: "utf-8",
+	});
+}
+
 function updatePackageJson(data, answer) {
 	packageJson.author = data.author.name;
 	packageJson.name = data.id;
@@ -240,6 +250,7 @@ for (const file of templateFiles) {
 updateManifest(data, answer);
 processReadme(data);
 processCi(data);
+processBugReport(data);
 console.log(c.success("✅ Generated ") + c.info("all files"));
 
 //update package.json
