@@ -52,6 +52,17 @@ function updateManifest(data, answer) {
 		encoding: "utf-8",
 	});
 }
+/**
+ * Get package manager
+ * @returns {"pnpm" | "yarn" | "npm" | "bun" | undefined}
+ */
+function getPackageManager() {
+	if (fs.existsSync("yarn.lock")) return "yarn";
+	if (fs.existsSync("pnpm-lock.yaml")) return "pnpm";
+	if (fs.existsSync("package-lock.json")) return "npm";
+	if (fs.existsSync("bun.lockb")) return "bun";
+	return undefined;
+}
 
 function processReadme(data) {
 	const readme = fs.readFileSync("./README.md", { encoding: "utf-8" });
@@ -103,40 +114,46 @@ function updatePackageJson(data, answer) {
 		encoding: "utf-8",
 	});
 }
-
-async function updateDep() {
-	if (fs.existsSync("yarn.lock")) {
-		console.log(c.info("Detected yarn, running yarn install"));
-		await execa("yarn", ["install"]);
-		//replace pnpm with yarn in package.json scripts
-		fs.writeFileSync(
-			"package.json",
-			fs.readFileSync("package.json", "utf-8").replace("pnpm", "yarn"),
-			"utf-8"
-		);
-	} else if (fs.existsSync("package-lock.json")) {
-		console.log(c.info("Detected npm, running npm install"));
-		fs.writeFileSync(
-			"package.json",
-			fs.readFileSync("package.json", "utf-8").replace("pnpm", "npm"),
-			"utf-8"
-		);
-		await execa("npm", ["install"]);
-	} else if (fs.existsSync("pnpm-lock.yaml")) {
-		console.log(c.info("Detected pnpm, running pnpm install"));
-		await execa("pnpm", ["install"]);
-	} else if (fs.existsSync("bun.lockb")) {
-		console.log(c.info("Detected bun, running bun install"));
-		await execa("bun", ["install"]);
-		fs.writeFileSync(
-			"package.json",
-			fs.readFileSync("package.json", "utf-8").replace("pnpm", "bun"),
-			"utf-8"
-		);
-	} else {
-		console.log(
-			c.warning("No package manager detected, please run yarn/npm/pnpm install")
-		);
+/**
+ * Install dep based on package manager detected (using lockfile)
+ * @param {"pnpm" | "npm" | "yarn" | "bun" | undefined} packageManager
+ */
+async function updateDep(packageManager) {
+	switch (packageManager) {
+		case "yarn":
+			console.log(c.info("Detected yarn, running yarn install"));
+			//replace pnpm with yarn in package.json scripts
+			fs.writeFileSync(
+				"package.json",
+				fs.readFileSync("package.json", "utf-8").replace("pnpm", "yarn"),
+				"utf-8"
+			);
+			await execa("yarn", ["install"]);
+			break;
+		case "npm":
+			console.log(c.info("Detected npm, running npm install"));
+			fs.writeFileSync(
+				"package.json",
+				fs.readFileSync("package.json", "utf-8").replace("pnpm", "npm"),
+				"utf-8"
+			);
+			await execa("npm", ["install"]);
+			break;
+		case "pnpm":
+			console.log(c.info("Detected pnpm, running pnpm install"));
+			await execa("pnpm", ["install"]);
+			break;
+		case "bun":
+			console.log(c.info("Detected bun, running bun install"));
+			await execa("bun", ["install"]);
+			fs.writeFileSync(
+				"package.json",
+				fs.readFileSync("package.json", "utf-8").replace("pnpm", "bun"),
+				"utf-8"
+			);
+			break;
+		default:
+			throw new Error("No package manager detected, please run yarn/npm/pnpm install");
 	}
 	console.log(c.success("✅ Installed dependencies"));
 }
@@ -256,6 +273,7 @@ const data = {
 		name: answer.author || "Sample Author",
 	},
 	isDesktopOnly: !!answer.desktopOnly || false,
+	packageManager: getPackageManager(),
 };
 
 if (answer.fundingUrl) {
@@ -278,7 +296,7 @@ updatePackageJson(data, answer);
 fs.writeFileSync(".hotreload", "", { encoding: "utf-8" });
 
 //detect if yarn or npm or pnpm
-await updateDep();
+await updateDep(data.packageManager);
 
 //delete this files
 fs.unlinkSync("generate.mjs");
