@@ -108,12 +108,31 @@ async function updateDep() {
 	if (fs.existsSync("yarn.lock")) {
 		console.log(c.info("Detected yarn, running yarn install"));
 		await execa("yarn", ["install"]);
+		//replace pnpm with yarn in package.json scripts
+		fs.writeFileSync(
+			"package.json",
+			fs.readFileSync("package.json", "utf-8").replace("pnpm", "yarn"),
+			"utf-8"
+		);
 	} else if (fs.existsSync("package-lock.json")) {
 		console.log(c.info("Detected npm, running npm install"));
+		fs.writeFileSync(
+			"package.json",
+			fs.readFileSync("package.json", "utf-8").replace("pnpm", "npm"),
+			"utf-8"
+		);
 		await execa("npm", ["install"]);
 	} else if (fs.existsSync("pnpm-lock.yaml")) {
 		console.log(c.info("Detected pnpm, running pnpm install"));
 		await execa("pnpm", ["install"]);
+	} else if (fs.existsSync("bun.lockb")) {
+		console.log(c.info("Detected bun, running bun install"));
+		await execa("bun", ["install"]);
+		fs.writeFileSync(
+			"package.json",
+			fs.readFileSync("package.json", "utf-8").replace("pnpm", "bun"),
+			"utf-8"
+		);
 	} else {
 		console.log(
 			c.warning("No package manager detected, please run yarn/npm/pnpm install")
