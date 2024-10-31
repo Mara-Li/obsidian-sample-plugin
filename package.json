@@ -1,8 +1,8 @@
 {
-	"name": "",
-	"version": "",
+	"name": "sample-plugin",
+	"version": "0.0.0",
 	"description": "",
-	"main": "",
+	"main": "main.js",
 	"private": true,
 	"scripts": {
 		"prebuild": "tsc --noEmit --skipLibCheck",
