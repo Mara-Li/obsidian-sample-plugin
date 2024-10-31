@@ -1,8 +1,9 @@
 {
-	"name": "vault-transfer",
-	"version": "1.2.3",
-	"description": "Copies a note, and pastes it into another vault.",
-	"main": "main.js",
+	"name": "",
+	"version": "",
+	"description": "",
+	"main": "",
+	"private": true,
 	"scripts": {
 		"prebuild": "tsc --noEmit --skipLibCheck",
 		"build": "node esbuild.config.mjs --production",
@@ -13,7 +14,7 @@
 		"postbump": "dotenv -- if-env SKIP_POST_BUMP=true && echo skip bump || git push --follow-tags origin master",
 		"predeploy": "pnpm run bump",
 		"deploy": "pnpm run export",
-		"lint": "pnpm biome lint --write src/"
+		"lint": "pnpm biome format --write src/"
 	},
 	"engines": {
 		"node": "^22.2.0"
@@ -26,9 +27,9 @@
 		"@types/node": "^16.11.6",
 		"builtin-modules": "4.0.0",
 		"esbuild": "0.21.5",
-		"obsidian": "^1.5.7-1",
+		"obsidian": "latest",
 		"tslib": "2.6.3",
-		"typescript": "5.4.5"
+		"typescript": "latest"
 	},
 	"dependencies": {
 		"@delucis/if-env": "^1.1.2",
