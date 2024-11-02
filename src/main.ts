@@ -44,7 +44,7 @@ export default class <%= data.interfaceName %> extends Plugin {
 		this.addCommand({
 			id: "sample-editor-command",
 			name: "Sample editor command",
-			editorCallback: (editor: Editor, _view: MarkdownView) => {
+			editorCallback: (editor: Editor, _view: MarkdownView|MarkdownFileInfo) => {
 				console.log(editor.getSelection());
 				editor.replaceSelection("Sample Editor Command");
 			}
