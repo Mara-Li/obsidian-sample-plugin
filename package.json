@@ -42,6 +42,7 @@
 		"dotenv-cli": "^7.4.2",
 		"ejs": "^3.1.10",
 		"execa": "^9.5.2",
+		"git-user-name": "^2.0.0",
 		"license": "^1.0.3",
 		"prompts": "^2.4.2",
 		"spdx-license-list": "^6.9.0"
