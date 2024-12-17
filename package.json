@@ -39,7 +39,11 @@
 		"commit-and-tag-version": "^12.4.1",
 		"dedent": "^1.5.3",
 		"dotenv": "^16.4.5",
-		"dotenv-cli": "^7.4.2"
+		"dotenv-cli": "^7.4.2",
+		"ejs": "^3.1.10",
+		"license": "^1.0.3",
+		"prompts": "^2.4.2",
+		"spdx-license-list": "^6.9.0"
 	},
 	"trustedDependencies": [
 		"@biomejs/biome",
