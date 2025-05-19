@@ -207,6 +207,24 @@ async function main() {
           description: (license.osiApproved && "OSI Approved") || "",
         })),
       },
+      {
+        type: "confirm",
+        name: "i18n",
+        message: "Do you want to add i18n support?",
+        initial: true,
+      },
+      {
+        type: "confirm",
+        name: "modal",
+        message: "Do you want to add an example modal?",
+        initial: false,
+      },
+      {
+        type: "confirm",
+        name: "settings",
+        message: "Do you want to add an example settings page?",
+        initial: false,
+      },
     ],
     {
       onCancel: () => {
@@ -216,7 +234,6 @@ async function main() {
     }
   );
 
-  // Préparation des données
   const data = {
     name: answer.name || "Sample Plugin",
     id: answer.id || "sample-plugin",
@@ -228,6 +245,9 @@ async function main() {
     },
     isDesktopOnly: !!answer.desktopOnly,
     packageManager: detectPackageManager(),
+    i18n: !!answer.i18n,
+    modal: !!answer.modal,
+    settings: !!answer.settings,
   };
 
   if (answer.fundingUrl) {
@@ -240,6 +260,9 @@ async function main() {
   // Fichiers de template
   const templateFiles = readdirRecursiveSync("./src");
   for (const file of templateFiles) {
+    if (file.name.startsWith("modals") && !data.modal) continue;
+    if (file.name.startsWith("settings") && !data.settings) continue;
+    if (file.name.startsWith("i18n") && !data.i18n) continue;
     processTemplate(file, data);
   }
 
@@ -277,6 +300,8 @@ async function main() {
     "dependencies.license",
     "dependencies.git-user-name"
   ];
+
+  if (!data.i18n) depsToRemove.push("devDependencies.i18next");
 
   depsToRemove.forEach(depPath => {
     const parts = depPath.split('.');
