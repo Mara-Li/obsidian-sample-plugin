@@ -36,7 +36,7 @@ const capitalize = (s) => typeof s === "string" ? s.charAt(0).toUpperCase() + s.
  */
 function readdirRecursiveSync(dir) {
   const results = [];
-  
+
   function readDirRecursive(currentPath) {
     fs.readdirSync(currentPath, { withFileTypes: true }).forEach(entry => {
       const fullPath = path.join(currentPath, entry.name);
@@ -47,7 +47,7 @@ function readdirRecursiveSync(dir) {
       }
     });
   }
-  
+
   readDirRecursive(dir);
   return results;
 }
@@ -61,12 +61,12 @@ function processTemplate(file, data) {
   const filePath = typeof file === 'string' ? file : path.join(file.path, file.name);
   const content = fs.readFileSync(filePath, { encoding: "utf-8" });
   const processed = ejs.render(content, { data });
-  
+
   // README special gestion
-  const finalContent = filePath.endsWith('README.md') 
+  const finalContent = filePath.endsWith('README.md')
     ? processed.replace("{{TEMPLATE_PLACEHOLDER LOCALE}}", "<% tp.obsidian.moment.locale() %>")
     : processed;
-    
+
   fs.writeFileSync(filePath, finalContent, { encoding: "utf-8" });
 }
 
@@ -90,14 +90,14 @@ async function updateDependencies(packageManager) {
   if (!packageManager) {
     throw new Error("No package manager detected. Actually supported: pnpm, npm, yarn and bun");
   }
-  
+
   const managerConfigs = {
     yarn: { cmd: "yarn", args: ["install"], replace: "yarn" },
     npm: { cmd: "npm", args: ["install"], replace: "npm" },
     pnpm: { cmd: "pnpm", args: ["install"], replace: "pnpm" },
     bun: { cmd: "bun", args: ["install"], replace: "bun" }
   };
-  
+
   const config = managerConfigs[packageManager];
   console.log(c.info(`Package manager ${packageManager} detected, execute ${config.cmd} ${config.args.join('')}`));
 
@@ -105,12 +105,12 @@ async function updateDependencies(packageManager) {
   if (packageManager !== 'pnpm') {
     const pkgContent = fs.readFileSync("package.json", "utf-8");
     fs.writeFileSync(
-      "package.json", 
+      "package.json",
       pkgContent.replace(/pnpm/g, config.replace),
       "utf-8"
     );
   }
-  
+
   await execa(config.cmd, config.args);
   console.log(c.success("✅ Dependencies updated successfully!"));
 }
@@ -121,7 +121,7 @@ async function updateDependencies(packageManager) {
  */
 function generateEnvFile(vaultPath) {
   if (!vaultPath) return;
-  
+
   const envContent = `VAULT=${vaultPath}`;
   fs.writeFileSync(".env", envContent, { encoding: "utf-8" });
   console.log(c.success("✅ Created .env file."));
@@ -138,7 +138,7 @@ async function main() {
     .toLowerCase()
     .replaceAll(" ", "-")
     .replace(/-?obsidian-?/, "");
-  
+
   // User informations
   const answer = await prompts(
     [
@@ -192,7 +192,7 @@ async function main() {
       {
         type: "text",
         name: "vaultPath",
-        message: "Enter the default vault path, used with the << --vault >> command option (optional)",
+        message: "Enter the default vault path, used with the << --vault >> command option and E2E (wdio) testing (optional)",
       },
       {
         type: "autocomplete",
@@ -213,7 +213,7 @@ async function main() {
       },
     }
   );
-  
+
   // Préparation des données
   const data = {
     name: answer.name || "Sample Plugin",
@@ -227,55 +227,55 @@ async function main() {
     isDesktopOnly: !!answer.desktopOnly,
     packageManager: detectPackageManager(),
   };
-  
+
   if (answer.fundingUrl) {
     data.fundingUrl = answer.fundingUrl;
   }
-  
+
   // Traitement des fichiers
   console.log(c.info("Files generations..."));
-  
+
   // Fichiers de template
   const templateFiles = readdirRecursiveSync("./src");
   for (const file of templateFiles) {
     processTemplate(file, data);
   }
-  
+
   // Fichiers spéciaux
   processTemplate("./manifest.json", data);
   fs.writeFileSync("manifest-beta.json", fs.readFileSync("manifest.json", { encoding: "utf-8" }), { encoding: "utf-8" });
-  
+
   // Génération de la licence
   const license = getLicense(answer.license, {
     author: data.author.name,
     year: new Date().getFullYear(),
   });
   fs.writeFileSync("LICENSE", license, { encoding: "utf-8" });
-  
+
   // Autres fichiers
   processTemplate("./README.md", data);
   processTemplate("./.github/workflows/ci.yaml", data);
   processTemplate("./.github/ISSUE_TEMPLATE/bug.yml", data);
-  
+
   // Mise à jour package.json
   console.log(c.info("Updating package.json..."));
   packageJson.author = data.author.name;
   packageJson.name = data.id;
   packageJson.license = answer.license;
   packageJson.description = data.description;
-  
+
   // Delete unwanted deps
   const depsToRemove = [
-    "scripts.generate", 
-    "devDependencies.@types/ejs", 
-    "dependencies.ejs", 
+    "scripts.generate",
+    "devDependencies.@types/ejs",
+    "dependencies.ejs",
     "dependencies.prompts",
-    "dependencies.spdx-license-list", 
-    "dependencies.execa", 
+    "dependencies.spdx-license-list",
+    "dependencies.execa",
     "dependencies.license",
     "dependencies.git-user-name"
   ];
-  
+
   depsToRemove.forEach(depPath => {
     const parts = depPath.split('.');
     let obj = packageJson;
@@ -283,26 +283,26 @@ async function main() {
       if (!obj[parts[i]]) break;
       obj = obj[parts[i]];
     }
-    
+
     if (obj) delete obj[parts[parts.length - 1]];
   });
-  
+
   fs.writeFileSync("package.json", JSON.stringify(packageJson, null, 2), { encoding: "utf-8" });
-  
+
   // Création fichier hotreload
   fs.writeFileSync(".hotreload", "", { encoding: "utf-8" });
-  
+
   // Création du fichier .env si un chemin de vault est fourni
   if (answer.vaultPath) {
     generateEnvFile(answer.vaultPath);
   }
-  
+
   // Update deps
   await updateDependencies(data.packageManager);
-  
+
   // Clean-up
   fs.unlinkSync("generate.mjs");
-  
+
   console.log(c.success("✅ Plugin generation done successfully!"));
 }
 
