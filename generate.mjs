@@ -139,6 +139,8 @@ async function main() {
     .replaceAll(" ", "-")
     .replace(/-?obsidian-?/, "");
 
+  if (fs.existsSync("LICENSE")) fs.unlinkSync("LICENSE");
+
   // User informations
   const answer = await prompts(
     [
