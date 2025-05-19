@@ -11,8 +11,9 @@ import { <%= data.interfaceName%>Modal } from "./modals";
 	import { <%= data.interfaceName %>SettingTab } from "./settings";
 <%}%>
 export default class <%= data.interfaceName %> extends Plugin {
+	<% if (data.settings === true) {%>
 	settings!: <%= data.interfaceName %>Settings;
-
+	<% } %>
 	async onload() {
 		console.log(`[${this.manifest.name}] Loaded`)
 		<% if (data.settings === true) { %>
