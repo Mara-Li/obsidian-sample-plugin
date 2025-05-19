@@ -334,6 +334,8 @@ async function main() {
   if (!data.settings)
     fs.unlinkSync(path.join("src", "settings.ts"));
 
+  //format files with biome
+  await execa(data.packageManager, ["biome", "format --write ./src/"], { stdio: "inherit" });
   // Clean-up
   fs.unlinkSync("generate.mjs");
 

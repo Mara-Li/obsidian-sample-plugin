@@ -2,8 +2,12 @@ import { type Editor, MarkdownView, Notice, Plugin, Modal } from "obsidian";
 import { resources, translationLanguage } from "./i18n";
 import i18next from "i18next";
 
+<% if (data.settings === true) { %>
 import { <%= data.interfaceName %>SettingTab } from "./settings";
+<%}%>
+<% if (data.modal === true) { %>
 import { <%= data.interfaceName%>Modal } from "./modals";
+<%}%>
 <% if (data.settings === true) {%>
 	import { <%= data.interfaceName%>Settings, DEFAULT_SETTINGS } from "./interfaces";
 <%}%>
