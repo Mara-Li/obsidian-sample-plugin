@@ -327,6 +327,13 @@ async function main() {
   // Update deps
   await updateDependencies(data.packageManager);
 
+  if (!data.i18n)
+    fs.rmSync(path.join("src", "i18n"), { recursive: true, force: true });
+  if (!data.modal)
+    fs.unlinkSync(path.join("src", "modals.ts"));
+  if (!data.settings)
+    fs.unlinkSync(path.join("src", "settings.ts"));
+
   // Clean-up
   fs.unlinkSync("generate.mjs");
 
