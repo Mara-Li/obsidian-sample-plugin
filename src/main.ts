@@ -1,22 +1,23 @@
-import { type Editor, MarkdownView, Notice, Plugin, Modal } from "obsidian";
+import { Plugin, Modal } from "obsidian";
+<% if (data.i18n === true) { %>
 import { resources, translationLanguage } from "./i18n";
 import i18next from "i18next";
-
-<% if (data.settings === true) { %>
-import { <%= data.interfaceName %>SettingTab } from "./settings";
-<%}%>
+<% } %>
 <% if (data.modal === true) { %>
 import { <%= data.interfaceName%>Modal } from "./modals";
 <%}%>
 <% if (data.settings === true) {%>
 	import { <%= data.interfaceName%>Settings, DEFAULT_SETTINGS } from "./interfaces";
+	import { <%= data.interfaceName %>SettingTab } from "./settings";
 <%}%>
 export default class <%= data.interfaceName %> extends Plugin {
 	settings!: <%= data.interfaceName %>Settings;
 
 	async onload() {
 		console.log(`[${this.manifest.name}] Loaded`)
+		<% if (data.settings === true) { %>
 		await this.loadSettings();
+		<% } %>
 		<% if (data.i18n === true) { %>
 		//load i18next
 				await i18next.init({
