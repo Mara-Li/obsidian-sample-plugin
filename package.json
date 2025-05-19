@@ -2,7 +2,6 @@
   "name": "sample-plugin",
   "version": "0.0.0",
   "description": "",
-  "main": "main.js",
   "private": true,
   "scripts": {
     "prebuild": "tsc --noEmit --skipLibCheck",
@@ -14,7 +13,8 @@
     "postbump": "dotenv -- if-env SKIP_POST_BUMP=true && echo skip bump || git push --follow-tags origin master",
     "predeploy": "pnpm run bump",
     "deploy": "pnpm run export",
-    "lint": "pnpm biome format --write src/"
+    "lint": "pnpm biome format --write src/",
+    "e2e": "pnpm run build && wdio run ./wdio.conf.mts"
   },
   "engines": {
     "node": "^22.2.0"
@@ -23,7 +23,7 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "@biomejs/biome": "^2.0.0-beta.4",
+    "@biomejs/biome": "^2.0.0-beta.5",
     "@types/node": "^22.15.19",
     "builtin-modules": "5.0.0",
     "i18next": "^25.0.1",
