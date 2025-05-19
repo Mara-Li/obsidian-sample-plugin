@@ -225,6 +225,12 @@ async function main() {
         message: "Do you want to add an example settings page?",
         initial: false,
       },
+      {
+        type: "confirm",
+        name: "styles",
+        message: "Do you want to add a styles.css file ?",
+        initial: true,
+      }
     ],
     {
       onCancel: () => {
@@ -248,6 +254,7 @@ async function main() {
     i18n: !!answer.i18n,
     modal: !!answer.modal,
     settings: !!answer.settings,
+    styles: !!answer.styles,
   };
 
   if (answer.fundingUrl) {
@@ -263,6 +270,7 @@ async function main() {
     if (file.name.startsWith("modals") && !data.modal) continue;
     if (file.name.startsWith("settings") && !data.settings) continue;
     if (file.name.startsWith("i18n") && !data.i18n) continue;
+    if (file.name.startsWith("styles") && !data.styles) continue;
     processTemplate(file, data);
   }
 

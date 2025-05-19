@@ -1,5 +1,5 @@
 
-
+<% if (data.settings === true) { %>
 export interface <%= data.interfaceName %>Settings {
 	mySetting: string;
 }
@@ -7,3 +7,4 @@ export interface <%= data.interfaceName %>Settings {
 export const DEFAULT_SETTINGS: <%= data.interfaceName %>Settings = {
 	mySetting: "default"
 };
+<% } %>
