@@ -57,7 +57,30 @@ export const config: WebdriverIO.Config = {
 	services: ["obsidian"],
 	// You can use any wdio reporter, but by default they show the chromium version instead of the Obsidian version a
 	// test is running on. obsidian-reporter is just a wrapper around spec-reporter that shows the Obsidian version.
-	reporters: ["obsidian"],
+	reporters: [
+		"obsidian",
+		/**
+		 * If needed, you can add a html-nice-reporter here, but it will not show the Obsidian version.
+		 * Do not forget to install it with `npm i -D wdio-html-nice-reporter`.
+		[
+			"html-nice",
+			{
+				debug: false,
+				outputDir: "./reports/html-reports/",
+				filename: "report.html",
+				reportTitle: "Web Test Report",
+				useOnAfterCommandForScreenshot: false,
+				linkScreenshots: true,
+				showInBrowser: true,
+				theme: "dark",
+				produceJson: true,
+				produceHtml: true,
+				removeOutput: true,
+				plugins: ["wdio-html-nice-reporter", "wdio-obsidian-reporter"],
+			},
+		],
+		*/
+	],
 
 	mochaOpts: {
 		ui: "bdd",
@@ -72,4 +95,51 @@ export const config: WebdriverIO.Config = {
 	cacheDir: cacheDir,
 
 	logLevel: "warn",
+	/**
+	 * if html-nice-reporter is used, uncomment theses
+	 */
+	/*
+	afterTest: function (test, context, { error }) {
+		if (error) {
+			if (typeof error.message === "string") {
+				error.message = stripAnsi(error.message);
+			}
+			if (typeof error.stack === "string") {
+				error.stack = stripAnsi(error.stack);
+			}
+
+			for (const key of Object.keys(error)) {
+				const value = (error as any)[key];
+				if (typeof value === "string") {
+					(error as any)[key] = stripAnsi(value);
+				}
+			}
+		}
+	},
+	onPrepare: function () {
+		reportAggregator = new ReportAggregator({
+			outputDir: "./reports/html-reports/",
+			filename: "report.html",
+			reportTitle: "Web Test Report",
+			browserName: "obsidian",
+			collapseTests: false,
+			showInBrowser: true,
+			removeOutput: true,
+			produceJson: false,
+		});
+		reportAggregator.clean(); // remove old reports
+	},
+	onComplete: async function () {
+		await reportAggregator.createReport();
+		const files = fs.readdirSync("./reports/html-reports/");
+		for (const file of files) {
+			if (file.endsWith(".json")) {
+				fs.unlinkSync(path.join("./reports/html-reports/", file));
+			}
+			if (file.endsWith(".html") && file !== "report.html") {
+				fs.unlinkSync(path.join("./reports/html-reports/", file));
+			}
+		}
+	},
+	*/
 };
