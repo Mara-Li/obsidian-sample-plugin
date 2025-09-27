@@ -1,7 +1,8 @@
 {
-  "name": "sample-plugin",
+  "name": "obsidian-sample-plugin",
   "version": "0.0.0",
-  "description": "",
+  "description": "This is a sample plugin for Obsidian (https://obsidian.md)",
+  "main": "main.ts",
   "private": true,
   "scripts": {
     "prebuild": "tsc --noEmit --skipLibCheck",
