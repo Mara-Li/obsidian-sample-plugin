@@ -289,6 +289,7 @@ async function main() {
   processTemplate("./README.md", data);
   processTemplate("./.github/workflows/ci.yaml", data);
   processTemplate("./.github/ISSUE_TEMPLATE/bug.yml", data);
+  processTemplate("./AGENTS.md", data);
 
   // Mise à jour package.json
   console.log(c.info("Updating package.json..."));

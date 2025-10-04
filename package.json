@@ -14,7 +14,7 @@
     "postbump": "dotenv -- if-env SKIP_POST_BUMP=true && echo skip bump || git push --follow-tags origin master",
     "predeploy": "pnpm run bump",
     "deploy": "pnpm run export",
-    "lint": "pnpm biome format --write src/",
+    "lint": "biome format --write src/",
     "e2e": "pnpm run build && wdio run ./wdio.conf.mts"
   },
   "engines": {

@@ -18,27 +18,27 @@
 ### Install
 
 ```bash
-npm install
+<%= data.packageManager %> install
 ```
 
 ### Dev (watch)
 
 ```bash
-npm run dev
+<%= data.packageManager %> run dev
 ```
 
 ### Production build
 
 ```bash
-npm run build
+<%= data.packageManager %> run build
 ```
 
 ## Linting
 
-- To use eslint install eslint from terminal: `npm install -g eslint`
-- To use eslint to analyze this project use this command: `eslint main.ts`
-- eslint will then create a report with suggestions for code improvement by file and line number.
-- If your source code is in a folder, such as `src`, you can use eslint with this command to analyze all files in that folder: `eslint ./src/`
+- To use biome, install biome from terminal: `npm install -g @biomejs/biome`
+- To use biome to analyze this project use this command: `biome check main.ts`
+- biome will then create a report with suggestions for code improvement by file and line number.
+- If your source code is in a folder, such as `src`, you can use eslint with this command to analyze all files in that folder: `biome check ./src/`
 
 ## File & folder conventions
 
