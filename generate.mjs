@@ -268,7 +268,7 @@ async function main() {
   const templateFiles = readdirRecursiveSync("./src");
   for (const file of templateFiles) {
     if (file.name.startsWith("modals") && !data.modal) continue;
-    if (file.name.startsWith("settings") && !data.settings) continue;
+    if ((file.name.startsWith("settings") || file.name.startsWith("interfaces")) && !data.settings) continue;
     if (file.name.startsWith("i18n") && !data.i18n) continue;
     if (file.name.startsWith("styles") && !data.styles) continue;
     processTemplate(file, data);
@@ -341,8 +341,10 @@ async function main() {
     fs.rmSync(path.join("src", "i18n"), { recursive: true, force: true });
   if (!data.modal)
     fs.unlinkSync(path.join("src", "modals.ts"));
-  if (!data.settings)
+  if (!data.settings) {
     fs.unlinkSync(path.join("src", "settings.ts"));
+    fs.unlinkSync(path.join("src", "interfaces.ts"));
+  }
 
   //format files with biome
   await execa(data.packageManager, ["biome", "format --write ./src/"], { stdio: "inherit" });

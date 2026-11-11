@@ -1,14 +1,6 @@
 import { type App, PluginSettingTab, type SettingDefinitionItem } from "obsidian";
 import type <%= data.interfaceName %> from "./main";
 
-export interface <%= data.interfaceName %>Settings {
-	greeting: string;
-}
-
-export const DEFAULT_SETTINGS: <%= data.interfaceName %>Settings = {
-	greeting: "Hello",
-};
-
 export class <%= data.interfaceName %>SettingTab extends PluginSettingTab {
 	plugin: <%= data.interfaceName %>;
 

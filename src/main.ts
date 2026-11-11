@@ -7,11 +7,8 @@ import { resources, translationLanguage } from "./i18n";
 import { <%= data.interfaceName %>Modal } from "./modals";
 <% } -%>
 <% if (data.settings === true) { -%>
-import {
-	DEFAULT_SETTINGS,
-	<%= data.interfaceName %>Settings,
-	<%= data.interfaceName %>SettingTab,
-} from "./settings";
+import { DEFAULT_SETTINGS, type <%= data.interfaceName %>Settings } from "./interfaces";
+import { <%= data.interfaceName %>SettingTab } from "./settings";
 <% } -%>
 
 export default class <%= data.interfaceName %> extends Plugin {
