@@ -44,9 +44,6 @@ importers:
       dedent:
         specifier: ^1.5.3
         version: 1.7.2
-      dotenv:
-        specifier: ^18.0.10
-        version: 18.0.10
       dotenv-cli:
         specifier: ^11.1.0
         version: 11.1.0
