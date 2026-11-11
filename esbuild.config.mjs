@@ -1,6 +1,6 @@
 import * as fs from "fs";
 import * as path from "path";
-import builtins from "builtin-modules";
+import { builtinModules } from "node:module";
 import { Command } from "commander";
 import dotenv from "dotenv";
 import esbuild from "esbuild";
@@ -122,10 +122,10 @@ async function buildPlugin() {
             "@lezer/common",
             "@lezer/highlight",
             "@lezer/lr",
-            ...builtins,
+            ...builtinModules,
         ],
         format: "cjs",
-        target: "esnext",
+        target: "es2021",
         logLevel: "info",
         sourcemap: isProd ? false : "inline",
         treeShaking: true,

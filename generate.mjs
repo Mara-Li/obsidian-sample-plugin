@@ -288,6 +288,7 @@ async function main() {
   // Autres fichiers
   processTemplate("./README.md", data);
   processTemplate("./.github/workflows/ci.yaml", data);
+  processTemplate("./.github/workflows/lint.yml", data);
   processTemplate("./.github/ISSUE_TEMPLATE/bug.yml", data);
   processTemplate("./AGENTS.md", data);
 

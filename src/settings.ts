@@ -1,5 +1,13 @@
-import { type App, PluginSettingTab, Setting } from "obsidian";
-import <%= data.interfaceName %> from "./main";
+import { type App, PluginSettingTab, type SettingDefinitionItem } from "obsidian";
+import type <%= data.interfaceName %> from "./main";
+
+export interface <%= data.interfaceName %>Settings {
+	greeting: string;
+}
+
+export const DEFAULT_SETTINGS: <%= data.interfaceName %>Settings = {
+	greeting: "Hello",
+};
 
 export class <%= data.interfaceName %>SettingTab extends PluginSettingTab {
 	plugin: <%= data.interfaceName %>;
@@ -9,20 +17,13 @@ export class <%= data.interfaceName %>SettingTab extends PluginSettingTab {
 		this.plugin = plugin;
 	}
 
-	display(): void {
-		const {containerEl} = this;
-
-		containerEl.empty();
-
-		new Setting(containerEl)
-			.setName("Setting #1")
-			.setDesc("It's a secret")
-			.addText(text => text
-				.setPlaceholder("Enter your secret")
-				.setValue(this.plugin.settings.mySetting)
-				.onChange(async (value) => {
-					this.plugin.settings.mySetting = value;
-					await this.plugin.saveSettings();
-				}));
+	getSettingDefinitions(): SettingDefinitionItem[] {
+		return [
+			{
+				name: "Greeting",
+				desc: "Text shown by the sample setting",
+				control: { type: "text", key: "greeting", placeholder: "Enter a greeting" },
+			},
+		];
 	}
 }

@@ -12,8 +12,8 @@ let versions: [string, string][]; // [appVersion, installerVersion][]
 if (process.env.OBSIDIAN_VERSIONS) {
 	// Space separated list of appVersion/installerVersion, e.g. "1.7.7/latest latest/earliest"
 	versions = process.env.OBSIDIAN_VERSIONS.split(/[ ,]+/).map((v) => {
-		const [app, installer = "earliest"] = v.split("/"); // default to earliest installer
-		return [app, installer];
+		const [app = "latest", installer = "earliest"] = v.split("/"); // default to earliest installer
+		return [app, installer] as [string, string];
 	});
 } else if (process.env.CI) {
 	// Running in GitHub CI. You can use RUNNER_OS to select different versions on different

@@ -1,4 +1,4 @@
-import { moment } from "obsidian";
+import { getLanguage } from "obsidian";
 
 import en from "./locales/en.json";
 //import fr from "./locales/fr.json";
@@ -8,7 +8,7 @@ export const resources = {
 	en: { translation: en },
 };
 
-const localeUsed: string = window.localStorage.language || moment.locale();
+const localeUsed: string = getLanguage();
 export const translationLanguage = Object.keys(resources).find(
 	(i) => i.toLocaleLowerCase() == localeUsed.toLowerCase()
 )

@@ -63,10 +63,6 @@ if (opt.beta) {
 			filename: "package.json",
 			type: "json",
 		},
-		{
-			filename: "package-lock.json",
-			type: "json",
-		},
 	];
 	commitAndTagVersion({
 		infile: "CHANGELOG-beta.md",
@@ -98,10 +94,6 @@ if (opt.beta) {
 		},
 		{
 			filename: "package.json",
-			type: "json",
-		},
-		{
-			filename: "package-lock.json",
 			type: "json",
 		},
 		{
