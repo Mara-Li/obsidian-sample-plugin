@@ -347,7 +347,7 @@ async function main() {
   }
 
   //format files with biome
-  await execa(data.packageManager, ["biome", "format --write ./src/"], { stdio: "inherit" });
+  await execa(data.packageManager, ["biome", "format", "--write", "./src/"], { stdio: "inherit" });
   // Clean-up
   fs.unlinkSync("generate.mjs");
 
