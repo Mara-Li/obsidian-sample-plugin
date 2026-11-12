@@ -58,7 +58,7 @@ function readdirRecursiveSync(dir) {
  * @param {Object} data - Données pour le template
  */
 function processTemplate(file, data) {
-  const filePath = typeof file === 'string' ? file : path.join(file.path, file.name);
+  const filePath = typeof file === 'string' ? file : path.join(file.parentPath ?? file.path, file.name);
   const content = fs.readFileSync(filePath, { encoding: "utf-8" });
   const processed = ejs.render(content, { data });
 
