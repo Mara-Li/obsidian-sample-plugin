@@ -1,10 +1,25 @@
+import { readFileSync } from "node:fs";
+import pkg from "ansi-colors";
 import { Command, Option } from "commander";
 import commitAndTagVersion from "commit-and-tag-version";
 import dedent from "dedent";
-import pkg from "ansi-colors";
+
 const { red, dim, gray, italic, bold, cyan, blue, green, underline, yellow, theme } = pkg;
 
 const program = new Command();
+
+// Adds the new version to versions.json with the minAppVersion from manifest.json
+const versionsUpdater = {
+	readVersion: (contents) => Object.keys(JSON.parse(contents)).at(-1),
+	writeVersion: (contents, version) => {
+		const versions = JSON.parse(contents);
+		if (version in versions) return contents;
+		const { minAppVersion } = JSON.parse(readFileSync("manifest.json", "utf8"));
+		versions[version] = minAppVersion;
+		const indent = contents.match(/^([ \t]+)"/m)?.[1] ?? "\t";
+		return `${JSON.stringify(versions, null, indent)}\n`;
+	},
+};
 
 theme({
 	danger: red,
@@ -99,6 +114,10 @@ if (opt.beta) {
 		{
 			filename: "manifest.json",
 			type: "json",
+		},
+		{
+			filename: "versions.json",
+			updater: versionsUpdater,
 		},
 	];
 
